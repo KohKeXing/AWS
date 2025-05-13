@@ -1,18 +1,19 @@
 <?php
 session_start();
 
-define("DB_HOST", "localhost");
-define("DB_USER", "root");
-define("DB_PASS", "");
-define("DB_NAME", "graduation_store");
+// Database connection
+$host = 'localhost';
+$dbname = 'graduation_store';
+$username = 'root';
+$password = '';
 
-$con = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-if ($con->connect_error) {
-    die("Connection failed: " . $con->connect_error);
+// Create connection
+$conn = new mysqli($host, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
-
-$errors = [];
-
 
 if (!isset($_SESSION['login_attempts'])) {
     $_SESSION['login_attempts'] = 0;
@@ -29,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<script>alert('You are temporarily blocked. Please try again later.');</script>";
         } else {
             $sql = "SELECT * FROM manager WHERE ManagerID = '$managerid' AND mgnpassword = '$mgnpassword'";
-            $result = mysqli_query($con, $sql);
+            $result = mysqli_query($conn, $sql);
 
             if (mysqli_num_rows($result) == 1) {
                 $_SESSION['login_attempts'] = 0;

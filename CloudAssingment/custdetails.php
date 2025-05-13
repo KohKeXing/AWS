@@ -1,4 +1,7 @@
 <?php session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
  ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -255,20 +258,21 @@ a {
         
     );
 
-    define("DB_HOST", "localhost");
-define("DB_USER", "root");
-define("DB_PASS", "");
-define("DB_NAME", "graduation_store");
+  // Database connection
+$host = 'localhost';
+$dbname = 'graduation_store';
+$username = 'root';
+$password = '';
 
-$con = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-if ($con->connect_error) {
-    die("Connection failed: " . $con->connect_error);
+// Create connection
+$conn = new mysqli($host, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
-
-$errors = [];
-
     $sql = "SELECT customerID, name, email, phonenum, dateofbirth, address, gender, registrationtime FROM customer;";
-    $result = $con->query($sql);
+    $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_object()) {
@@ -293,7 +297,7 @@ $errors = [];
         echo "<tr><td colspan='10'>No records found.</td></tr>";
     }
 
-    $con->close();
+    $conn->close();
   ?>
 </tbody>
 

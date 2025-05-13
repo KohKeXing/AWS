@@ -1,16 +1,21 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-define("DB_HOST", "localhost");
-define("DB_USER", "root");
-define("DB_PASS", "");
-define("DB_NAME", "graduation_store");
+// Database connection
+$host = 'localhost';
+$dbname = 'graduation_store';
+$username = 'root';
+$password = '';
 
-$con = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-if ($con->connect_error) {
-    die("Connection failed: " . $con->connect_error);
+// Create connection
+$conn = new mysqli($host, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
-
-$errors = [];
 
 
 // Check if the user is already logged in
@@ -22,7 +27,7 @@ if (!$managerid) {
 
 
 $sql = "SELECT * FROM graduate WHERE ManagerID = '$managerid'";
-$result = mysqli_query($con, $sql);
+$result = mysqli_query($conn, $sql);
 
 if (!$result || mysqli_num_rows($result) != 1) {
     header("Location: admin_login.php");

@@ -1,6 +1,9 @@
 <?php
 session_start();
 include 'help.php'; // Include database connection
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 // Ensure customerid is stored in session (e.g., from login process)
 if (!isset($_SESSION['customerid'])) {

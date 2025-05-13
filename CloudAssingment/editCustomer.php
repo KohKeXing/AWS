@@ -1,17 +1,22 @@
 <?php
 session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-define("DB_HOST", "localhost");
-define("DB_USER", "root");
-define("DB_PASS", "");
-define("DB_NAME", "graduation_store");
+// Database connection
+$host = 'localhost';
+$dbname = 'graduation_store';
+$username = 'root';
+$password = '';
 
-$con = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-if ($con->connect_error) {
-    die("Connection failed: " . $con->connect_error);
+// Create connection
+$conn = new mysqli($host, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
-
-$errors = [];
 
 
 $customerid = $_SESSION['customerid'] ?? null;
@@ -64,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     if ($isValid) {
-        $stmt = $con->prepare("UPDATE customer SET name=?, email=?, phonenum=?, dateofbirth=?, address=?, gender=? WHERE customerid=?");
+        $stmt = $conn->prepare("UPDATE customer SET name=?, email=?, phonenum=?, dateofbirth=?, address=?, gender=? WHERE customerid=?");
         $stmt->bind_param("sssssss", $name, $email, $tel, $dob, $address, $gender, $customerid);
         if ($stmt->execute()) {
             echo "<script>alert('Customer updated successfully.'); window.location.href='profile.php';</script>";
@@ -76,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 } else {
     $sql = "SELECT * FROM customer WHERE customerid = '$customerid'";
-    $result = $con->query($sql);
+    $result = $conn->query($sql);
     if ($result->num_rows !== 1) {
         die("Customer not found.");
     }
@@ -196,4 +201,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </body>
 </html>
 
-<?php $con->close(); ?>
+<?php $conn->close(); ?>

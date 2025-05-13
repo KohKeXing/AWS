@@ -1,20 +1,25 @@
 <?php
 // adminEdit.php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-define("DB_HOST", "localhost");
-define("DB_USER", "root");
-define("DB_PASS", "");
-define("DB_NAME", "graduation_store");
+// Database connection
+$host = 'localhost';
+$dbname = 'graduation_store';
+$username = 'root';
+$password = '';
 
-$con = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-if ($con->connect_error) {
-    die("Connection failed: " . $con->connect_error);
+// Create connection
+$conn = new mysqli($host, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
-$errors = [];
-
 $managerID = $_GET['managerID'] ?? null;
-$managerID = $con->real_escape_string($managerID);
+$managerID = $conn->real_escape_string($managerID);
 
 if (!$managerID) {
     die("Invalid Manager ID.");
@@ -72,13 +77,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Update if valid
     if ($isValid) {
-        $name = $con->real_escape_string($name);
-        $tel = $con->real_escape_string($tel);
-        $email = $con->real_escape_string($email);
-        $dept = $con->real_escape_string($dept);
+        $name = $conn->real_escape_string($name);
+        $tel = $conn->real_escape_string($tel);
+        $email = $conn->real_escape_string($email);
+        $dept = $conn->real_escape_string($dept);
 
         $update = "UPDATE manager SET managername='$name', mgnTelephone='$tel', mgnemail='$email', department='$dept' WHERE managerID='$managerID'";
-        if ($con->query($update)) {
+        if ($conn->query($update)) {
             echo "<script>alert('Manager details updated successfully.'); window.location.href='admindetails.php';</script>";
             exit;
         } else {
@@ -88,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 } else {
     // Initial data load
     $sql = "SELECT * FROM manager WHERE managerID = '$managerID'";
-    $result = $con->query($sql);
+    $result = $conn->query($sql);
     if ($result->num_rows !== 1) {
         die("Manager not found.");
     }
@@ -346,4 +351,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </body>
 </html>
 
-<?php $con->close(); ?>
+<?php $conn->close(); ?>

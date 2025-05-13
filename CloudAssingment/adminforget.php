@@ -1,17 +1,23 @@
 <?php
 session_start();
 
-define("DB_HOST", "localhost");
-define("DB_USER", "root");
-define("DB_PASS", "");
-define("DB_NAME", "graduation_store");
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-$con = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-if ($con->connect_error) {
-    die("Connection failed: " . $con->connect_error);
+// Database connection
+$host = 'localhost';
+$dbname = 'graduation_store';
+$username = 'root';
+$password = '';
+
+// Create connection
+$conn = new mysqli($host, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
-
-$errors = [];
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -19,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mgnemail = $_POST['nemail'];
 
         $sql = "SELECT * FROM manager WHERE mgnemail = ?";
-        $stmt = $con->prepare($sql);
+        $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $mgnemail);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -37,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<script>alert('Please fill in the email field.');</script>";
     }
 
-    $con->close();
+    $conn->close();
 }
 ?>
 

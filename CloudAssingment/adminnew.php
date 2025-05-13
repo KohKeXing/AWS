@@ -1,16 +1,22 @@
 <?php
 
-define("DB_HOST", "localhost");
-define("DB_USER", "root");
-define("DB_PASS", "");
-define("DB_NAME", "graduation_store");
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-$con = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-if ($con->connect_error) {
-    die("Connection failed: " . $con->connect_error);
+// Database connection
+$host = 'localhost';
+$dbname = 'graduation_store';
+$username = 'root';
+$password = '';
+
+// Create connection
+$conn = new mysqli($host, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
-
-$errors = [];
 
 
 function checkPassword($mgnpassword){
@@ -38,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Use mgnemail from session instead of ManagerID
                 $mgnemail = $_SESSION['mgnemail'];
                 $sql = "UPDATE manager SET mgnpassword = ? WHERE mgnemail = ?";
-                $stmt = $con->prepare($sql);
+                $stmt = $conn->prepare($sql);
                 $stmt->bind_param("ss", $newPassword, $mgnemail);
                 $stmt->execute();
 
@@ -50,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 $stmt->close();
-                $con->close();
+                $conn->close();
             }
         }
     } else {

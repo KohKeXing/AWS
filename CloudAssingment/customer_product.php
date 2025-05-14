@@ -1,13 +1,9 @@
 <?php
+// Database connection
+include 'help.php';
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-// Database connection
-$host = 'localhost';
-$dbname = 'graduation_store';
-$username = 'root';
-$password = '';
-
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -832,6 +828,7 @@ function getSubcategoryName($subcategoryId, $subcategories) {
     <a href="profile.php?customerid=<?= $_SESSION['customerid'] ?>"><i class="fas fa-stream"></i> Profile</a>
       <a href="customer_product.php"><i class="fas fa-graduation-cap"></i> Graduation Gift </a>
       <a href="shopping_cart.php"><i class="fas fa-shopping-cart"></i> Cart </a>
+      <a href="order_history.php"><i class="fa-solid fa-clipboard-list"></i> History </a>
       <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Log Out</a> <!-- Log out link -->
     </nav>
   </header>

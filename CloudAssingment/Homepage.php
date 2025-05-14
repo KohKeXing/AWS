@@ -512,6 +512,7 @@ $productsResult = $conn->query($productsQuery);
       <a href="profile.php?customerid=<?= $_SESSION['customerid'] ?>"><i class="fas fa-stream"></i> Profile</a>
       <a href="customer_product.php"><i class="fas fa-graduation-cap"></i> Graduation Gift </a>
       <a href="shopping_cart.php"><i class="fas fa-shopping-cart"></i> Cart </a>
+      <a href="order_history.php"><i class="fa-solid fa-clipboard-list"></i> History </a>
       <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Log Out</a> <!-- Log out link -->
     </nav>
   </header>

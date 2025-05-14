@@ -3,15 +3,15 @@ session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+// Rest of your connection code remains the same
 // Include database connection
 if (file_exists('db.php')) {
     include 'db.php';
 } else {
-    
-    $host = 'localhost';
-    $dbname = 'graduation_store';
-    $username = 'root';
-    $password = '';
+  $host = 'localhost';
+  $dbname = 'graduation_store';
+  $username = 'root';
+  $password = '';
 
     try {
         $conn = new mysqli($host, $username, $password, $dbname);
@@ -357,7 +357,30 @@ a {
     text-decoration: none;
     color: inherit; /* Optional: keeps the same color as surrounding text */
 }
+/* Add this to your existing CSS styles */
+.highlight-match {
+    background-color: #FFEB3B;
+    padding: 2px;
+    border-radius: 2px;
+}
 
+/* Prevent text selection on search inputs to avoid accidental highlighting */
+input[type="text"] {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+/* Make sure clicking on inputs doesn't cause any unwanted behavior */
+.filter-bar input,
+.filter-bar select,
+.search input {
+    cursor: text;
+}
+
+/* Make sure buttons have proper cursor */
+button {
+    cursor: pointer;
+}
 
   </style>
 </head>
@@ -377,16 +400,16 @@ a {
 
        
         <main class="main-content">
-            <header class="top-bar">
-                <div class="search">
-                    <input type="text" id="productSearch" placeholder="Search products...">
-                </div>
-                <div class="user-info">
-    <span>Admin User</span>
-    <i class="fas fa-user-circle" style="font-size: 24px; color: #333;"></i>
-</div>
-
-            </header>
+        <header class="top-bar">
+    <div class="search">
+        <!-- Make sure this is not inside a form element -->
+        <input type="text" id="productSearch" placeholder="Search products..." autocomplete="off">
+    </div>
+    <div class="user-info">
+        <span>Admin User</span>
+        <i class="fas fa-user-circle" style="font-size: 24px; color: #333;"></i>
+    </div>
+</header>
 
             <div class="dashboard">
                 <h1>Order Management</h1>
@@ -394,16 +417,16 @@ a {
 <div class="content">
 
 
-  <form class="filter-bar" method="GET">
-    <input type="text" name="search" placeholder="Search Order ID..." value="<?php echo htmlspecialchars($search); ?>">
+<form class="filter-bar" method="GET" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" onsubmit="return validateFilter();">
+    <input type="text" name="search" placeholder="Search Order ID..." value="<?php echo htmlspecialchars($search); ?>" autocomplete="off">
     <select name="status">
-      <option value="">All Status</option>
-      <option value="Pending" <?php if($status_filter=='Pending') echo 'selected'; ?>>Pending</option>
-      <option value="Processing" <?php if($status_filter=='Processing') echo 'selected'; ?>>Processing</option>
-      <option value="Completed" <?php if($status_filter=='Completed') echo 'selected'; ?>>Completed</option>
+        <option value="">All Status</option>
+        <option value="Pending" <?php if($status_filter=='Pending') echo 'selected'; ?>>Pending</option>
+        <option value="Processing" <?php if($status_filter=='Processing') echo 'selected'; ?>>Processing</option>
+        <option value="Completed" <?php if($status_filter=='Completed') echo 'selected'; ?>>Completed</option>
     </select>
     <button type="submit">Filter</button>
-  </form>
+</form>
 <div style="margin-bottom: 10px; font-size: 16px; color: #555;">
   Total Orders: <?php echo $total_orders; ?>
 </div>
@@ -453,6 +476,81 @@ a {
     <?php endfor; ?>
   </div>
 </div>
+<script>
+  
+// Replace your current script with this fixed version
+document.addEventListener('DOMContentLoaded', function() {
+    // Top bar product search functionality
+    const productSearch = document.getElementById('productSearch');
+    if (productSearch) {
+        // Prevent default behavior when clicking the search input
+        productSearch.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent any default action
+            e.stopPropagation(); // Stop event propagation
+        });
+        
+        // Handle the search functionality
+        productSearch.addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase().trim();
+            const tableRows = document.querySelectorAll('tbody tr');
 
+            tableRows.forEach(row => {
+                let matchFound = false;
+                const cells = row.querySelectorAll('td');
+
+                cells.forEach(cell => {
+                    if (cell.querySelector('img')) return;
+
+                    const text = cell.textContent.toLowerCase();
+                    if (searchValue !== '' && text.includes(searchValue)) {
+                        matchFound = true;
+
+                        // Highlight the match
+                        const regex = new RegExp(`(${searchValue})`, 'gi');
+                        cell.innerHTML = cell.textContent.replace(regex, '<mark class="highlight-match">$1</mark>');
+                    } else {
+                        cell.innerHTML = cell.textContent; // Remove highlights
+                    }
+                });
+
+                row.style.display = matchFound ? '' : 'none';
+            });
+        });
+    }
+
+    // Fix for the filter bar form
+    const filterForm = document.querySelector('.filter-bar');
+    if (filterForm) {
+        // Prevent default form submission on enter key
+        filterForm.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Fix for filter form inputs
+        const filterInputs = filterForm.querySelectorAll('input, select');
+        filterInputs.forEach(input => {
+            input.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent any default action
+                e.stopPropagation(); // Stop event propagation
+            });
+        });
+        
+        // Only submit when the filter button is clicked
+        const filterButton = filterForm.querySelector('button[type="submit"]');
+        if (filterButton) {
+            filterButton.addEventListener('click', function(e) {
+                // This will allow normal form submission when the button is clicked
+            });
+        }
+    }
+});
+function validateFilter() {
+    // This function can be used to validate before submitting if needed
+    return true; // Return true to allow form submission
+}
+  </script>
 </body>
 </html>

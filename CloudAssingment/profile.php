@@ -1,23 +1,22 @@
 <?php
 session_start();
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
-
 if (!isset($_SESSION['customerid'])) {
     die("You are not logged in.");
 }
 
 $customerid = $_SESSION['customerid'];
 
-$conn = new mysqli("localhost", "root", "", "graduation_store");
-if ($conn->connect_error) {
+$con = new mysqli("localhost", "root", "", "graduation_store");
+if ($con->connect_error) {
     die("Connection failed: " . $con->connect_error);
 }
 
 $sql = "SELECT * FROM customer WHERE customerid = '$customerid'";
-$result = $conn->query($sql);
+$result = $con->query($sql);
 if ($result->num_rows !== 1) {
     die("Customer not found.");
 }

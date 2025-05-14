@@ -8,11 +8,7 @@ if (!isset($_SESSION['customerid'])) {
     exit();
 }
 
-$host = 'localhost';
-$dbname = 'graduation_store';
-$username = 'root';
-$password = '';
-
+include 'help.php';
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
